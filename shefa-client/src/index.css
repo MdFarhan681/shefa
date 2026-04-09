@@ -8,11 +8,29 @@
 
 body {
   font-family: "Urbanist", sans-serif;
+  /* background-color: #f8f9fa; */
+ 
 }
+.my-btn {
+  @apply w-fit bg-gradient-to-r from-green-400 to-emerald-600 
+  hover:from-green-500 hover:to-emerald-700 
+  text-white font-semibold text-[1rem] py-3 rounded-xl 
+  shadow-md hover:shadow-lg transition-all duration-200 
+  active:scale-95 px-4;
+}
+/* golapi */
+/* .my-btn {
+  @apply w-fit bg-gradient-to-r from-purple-500 to-pink-500 
+  hover:from-purple-600 hover:to-pink-600 
+  text-white font-semibold text-[1rem] py-3 rounded-xl 
+  shadow-md hover:shadow-lg transition-all duration-200 
+  active:scale-95 px-4;
+} */
 
+/* blue */
 .my-btn {
   @apply w-fit bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-[1rem] py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 px-4;
-}
+} 
 
 .nav-link {
   position: relative;

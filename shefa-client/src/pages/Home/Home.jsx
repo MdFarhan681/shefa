@@ -6,8 +6,9 @@ import DoctorSlider from '../Shared/DoctorSlider/DoctorSlider'
 
 const Home = () => {
   return (
-    <div className=' w-full px-[7%]'>
+    <div className=' w-full px-[7%] gap-8 flex flex-col '>
 <ResponsiveSlider></ResponsiveSlider>
+
 <DoctorSlider></DoctorSlider>
 <Consultation
 ></Consultation>

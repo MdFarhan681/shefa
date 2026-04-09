@@ -9,19 +9,19 @@ import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-[#0b1324] to-[#0e1a33] text-gray-300 h-fit">
+    <footer className="bg-gradient-to-r from-[#0b1324] to-[#0e1a33] text-gray-300 h-fit mb-[-30px] ">
       <div className="max-w-7xl mx-auto px-6 py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 ">
 
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <h2 className="text-xl font-semibold text-white">
-                Amader Doctor
+              Shefa
               </h2>
             </div>
             <p className="text-sm leading-relaxed text-gray-400">
-              Amader Doctor is a digital healthcare platform connecting
+              Shefa is a digital healthcare platform connecting
               patients with verified doctors for secure, reliable, and
               convenient medical consultations anytime, anywhere.
             </p>

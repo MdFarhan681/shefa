@@ -1,6 +1,6 @@
 const Up = () => {
   return (
-    <div className="relative w-full h-45">
+    <div className="relative  w-full h-45">
       <img
         src="/image.png"
         alt="header image"
