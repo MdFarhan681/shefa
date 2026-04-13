@@ -3,6 +3,7 @@ node_modules/
 
 
 .env
+shefa-firebase-admin-service-key.json
 
 # Logs
 logs
@@ -29,3 +30,4 @@ coverage/
 # Optional: temp files
 tmp/
 temp/
+.vercel

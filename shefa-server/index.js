@@ -4,8 +4,12 @@ const port = 3000;
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+  origin: [
+    "http://localhost:5174",
+    "https://your-frontend-domain.vercel.app"
+  ]
+}));app.use(express.json());
 const { ObjectId } = require("mongodb");
 
 const uri =
@@ -20,10 +24,12 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+  // await client.connect();
     const db = client.db("shefa");
     const usersCollection = db.collection("users");
     const doctorsCollection = db.collection("doctors");
+
+
 
     // POST user
     app.post("/users", async (req, res) => {
@@ -46,21 +52,43 @@ async function run() {
       }
     });
 
+    //user serch by email
+   app.get("/users/:email", async (req, res) => {
+  const email = req.params.email;
+  const user = await usersCollection.findOne({ email });
+
+  if (!user) {
+    return res.status(404).send({ message: "User not found" });
+  }
+
+  res.send(user);
+});
     // GET doctors
-    app.get("/doctors", async (req, res) => {
-      try {
-        const doctors = await doctorsCollection
-          .find()
-          .limit(7) // ✅ limit to 7
-          .toArray();
+app.get("/doctors", async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 8;
 
-        res.json(doctors);
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Server error" });
-      }
+    const skip = (page - 1) * limit;
+
+    const total = await doctorsCollection.countDocuments();
+
+    const doctors = await doctorsCollection
+      .find()
+      .skip(skip)      // 🔥 IMPORTANT
+      .limit(limit)    // 🔥 IMPORTANT
+      .toArray();
+
+    res.send({
+      doctors,
+      total,
+      totalPages: Math.ceil(total / limit),
+      page,
     });
-
+  } catch (err) {
+    res.status(500).send({ error: "Failed to fetch doctors" });
+  }
+});
     //single doctor details
 app.get("/api/doctors/:id", async (req, res) => {
   const { id } = req.params;
@@ -86,7 +114,7 @@ app.get("/api/doctors/:id", async (req, res) => {
       }
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Connected to MongoDB!");
   } finally {
     // client.close() // don't close connection
