@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import useAuth from '../../../hooks/useAuth';
-import { Link, useNavigate } from 'react-router';
-import SocialLogin from '../SocialLogin/SocialLogin';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import useAuth from "../../../hooks/useAuth";
+import { Link, useNavigate } from "react-router";
+import SocialLogin from "../SocialLogin/SocialLogin";
+import toast from "react-hot-toast";
 import { BsEyeglasses } from "react-icons/bs";
 import { PiEyeClosed } from "react-icons/pi";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("patient"); 
+  const [role, setRole] = useState("patient");
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { registerUser, updateUserProfile } = useAuth();
   const navigate = useNavigate();
 
@@ -21,9 +25,7 @@ const Register = () => {
       type="button"
       onClick={() => setRole(value)}
       className={`flex-1 py-2 rounded-xl text-sm font-semibold transition ${
-        role === value
-          ? "bg-blue-600 text-white"
-          : "bg-gray-100 text-gray-600"
+        role === value ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
       }`}
     >
       {label}
@@ -35,24 +37,22 @@ const Register = () => {
 
     registerUser(data.email, data.password)
       .then(() => {
-
         const userInfo = {
           email: data.email,
           displayName: data.name,
           photoURL: data.photo,
-          role: role // ✅ dynamic role
+          role: role, // ✅ dynamic role
         };
 
-        fetch('http://localhost:3000/users', {
-          method: 'POST',
+        fetch("http://localhost:3000/users", {
+          method: "POST",
           headers: {
-            'content-type': 'application/json'
+            "content-type": "application/json",
           },
-          body: JSON.stringify(userInfo)
+          body: JSON.stringify(userInfo),
         })
-          .then(res => res.json())
-          .then(response => {
-
+          .then((res) => res.json())
+          .then((response) => {
             if (!response.inserted) {
               toast.error("User already exists ⚠️");
               setLoading(false);
@@ -61,23 +61,21 @@ const Register = () => {
 
             updateUserProfile({
               displayName: data.name,
-              photoURL: data.photo
+              photoURL: data.photo,
             })
               .then(() => {
                 toast.success("Registration successful 🎉");
-                navigate('/');
+                navigate("/");
               })
               .finally(() => setLoading(false));
-              toast.success("Registration successful 🎉");
-
+            toast.success("Registration successful 🎉");
           })
           .catch(() => {
             toast.error("Database error ❌");
             setLoading(false);
           });
-
       })
-      .catch(error => {
+      .catch((error) => {
         toast.error(error.message);
         setLoading(false);
       });
@@ -87,13 +85,14 @@ const Register = () => {
     <div className="min-h-screen">
       <div className="flex justify-center items-center">
         <div className="card bg-base-100 w-[94%] md:w-[420px] shadow-2xl">
-
           <h1 className="text-xl md:text-3xl pt-5 font-bold text-center">
             Register Your Account
           </h1>
 
-          <form onSubmit={handleSubmit(handleRegistration)} className="card-body">
-
+          <form
+            onSubmit={handleSubmit(handleRegistration)}
+            className="card-body"
+          >
             {/* ✅ Role Selector */}
             <div className="flex gap-2 bg-gray-100 rounded-xl p-1 mb-3">
               {roleBtn("patient", "Patient")}
@@ -103,7 +102,7 @@ const Register = () => {
             {/* Name */}
             <label className="label">Name</label>
             <input
-              {...register('name', { required: true })}
+              {...register("name", { required: true })}
               className="input w-full"
               placeholder="Enter your name"
             />
@@ -113,7 +112,7 @@ const Register = () => {
             <label className="label">Email</label>
             <input
               type="email"
-              {...register('email', { required: true })}
+              {...register("email", { required: true })}
               className="input w-full"
               placeholder="Email"
             />
@@ -122,7 +121,7 @@ const Register = () => {
             {/* Photo */}
             <label className="label">Photo URL</label>
             <input
-              {...register('photo', { required: true })}
+              {...register("photo", { required: true })}
               className="input w-full"
               placeholder="https://..."
             />
@@ -134,7 +133,7 @@ const Register = () => {
 
               <input
                 type={showPassword ? "text" : "password"}
-                {...register('password', { required: true, minLength: 6 })}
+                {...register("password", { required: true, minLength: 6 })}
                 className="input w-full pr-12"
                 placeholder="Password"
               />
@@ -183,7 +182,6 @@ const Register = () => {
             <div className="pt-3">
               <SocialLogin />
             </div>
-
           </form>
         </div>
       </div>

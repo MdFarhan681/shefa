@@ -28,7 +28,7 @@ const services = [
   { label: "অ্যাম্বুলেন্স", href: "/services/ambulance" },
   { label: "ওষুধ ডেলিভারি", href: "/services/medicine-delivery" },
   { label: "ফার্মেসি", href: "/services/pharmacy" },
-  { label: "ডায়াগনস্টিক সেন্টার", href: "/services/diagnostic" },
+  { label: "ডায়াগনস্টিক সেন্টার", href: "/services/diagnostic-centers" },
   { label: "আরও সার্ভিস", href: "/services/more-services" },
 ];
 

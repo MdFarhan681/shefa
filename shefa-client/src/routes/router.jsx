@@ -10,8 +10,18 @@ import Register from "../pages/Auth/Register/Register";
 import DoctorDetailsPage from "../pages/Doctor/DoctorDetails/DoctorDetails";
 import AllDoctors from "../pages/Doctor/AllDoctors/AllDoctors";
 import Services from "../pages/Services/Services";
-import MedicineShop from "../pages/Services/Pharmacy/Pharmacy";
+
 import Pharmacy from "../pages/Services/Pharmacy/Pharmacy";
+import PatientDashBoard from "../pages/DashBoard/PatientDashBoard/PatientDashBoard";
+import Dashboard from "../pages/DashBoard/Dashboard";
+import DashBoard from "../layouts/DashBoardLayout";
+import PatientDashboard from "../pages/DashBoard/PatientDashBoard/PatientDashBoard";
+import DashBoardLayout from "../layouts/DashBoardLayout";
+import DoctorDashBoard from "../pages/DashBoard/DoctorDashboard/DoctorDashBoard";
+import AmbulanceCard from "../pages/Services/Ambulance/AmbulanceCard";
+import DeliveryForm from "../pages/Services/Delivery/DeliveryForm";
+
+import Diagnostics from "../pages/Services/Diagnostics/Diagnostics";
 
  export const router = createBrowserRouter([
   {
@@ -34,10 +44,28 @@ import Pharmacy from "../pages/Services/Pharmacy/Pharmacy";
        Component: Services,
       },
       {
+        path:"/services/ambulance",
+        Component: AmbulanceCard
+      },
+      {
+        path:"/services/medicine-delivery",
+        Component: DeliveryForm
+      },
+      {
         path:"/services/pharmacy",
         Component: Pharmacy
+      },
+      
+      {
+        path:"/services/diagnostic-centers",
+        Component: Diagnostics
+      },
+      {
+        path:"/dashboard",
+        Component:Dashboard
       }
-]},{
+]},
+{
 
   path:"/",
   Component:AuthLayout,
@@ -50,7 +78,16 @@ import Pharmacy from "../pages/Services/Pharmacy/Pharmacy";
       Component:Register
     }
   ]
-}
+},
+ {
+    path: "/dashboard",
+    element: <DashBoardLayout />,
+    children: [
+      { index: true, element: <Dashboard /> }, // role-based redirect
+      { path: "patient", element: <PatientDashboard /> },
+      { path: "doctor", element: <DoctorDashBoard /> },
+    ],
+  },
 
 
 ]);
