@@ -4,12 +4,16 @@ const port = 3000;
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
-app.use(cors({
-  origin: [
-    "http://localhost:5174",
-    "https://your-frontend-domain.vercel.app"
-  ]
-}));app.use(express.json());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "https://your-frontend-domain.vercel.app",
+    ],
+  }),
+);
+app.use(express.json());
 const { ObjectId } = require("mongodb");
 
 const uri =
@@ -24,12 +28,10 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-  // await client.connect();
+    // await client.connect();
     const db = client.db("shefa");
     const usersCollection = db.collection("users");
     const doctorsCollection = db.collection("doctors");
-
-
 
     // POST user
     app.post("/users", async (req, res) => {
@@ -53,54 +55,126 @@ async function run() {
     });
 
     //user serch by email
-   app.get("/users/:email", async (req, res) => {
-  const email = req.params.email;
-  const user = await usersCollection.findOne({ email });
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await usersCollection.findOne({ email });
 
-  if (!user) {
-    return res.status(404).send({ message: "User not found" });
-  }
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
 
-  res.send(user);
-});
+      res.send(user);
+    });
     // GET doctors
+    // app.get("/doctors", async (req, res) => {
+    //   try {
+    //     const page = parseInt(req.query.page) || 1;
+    //     const limit = parseInt(req.query.limit) || 7;
+
+    //     const skip = (page - 1) * limit;
+
+    //     const totalDoctors = await doctorsCollection.countDocuments();
+
+    //     const doctors = await doctorsCollection
+    //       .find()
+    //       .skip(skip)
+    //       .limit(limit)
+    //       .toArray();
+
+    //     res.json({
+    //       doctors,
+    //       totalPages: Math.ceil(totalDoctors / limit),
+    //       currentPage: page,
+    //     });
+    //   } catch (err) {
+    //     console.error(err);
+    //     res.status(500).json({ error: "Server error" });
+    //   }
+    // });
 app.get("/doctors", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 8;
+    const limit = parseInt(req.query.limit) || 7;
 
     const skip = (page - 1) * limit;
 
-    const total = await doctorsCollection.countDocuments();
+    const { category, search, gender, minFee, maxFee } = req.query;
+
+    let query = {};
+
+    // ======================
+    // 1. CATEGORY FILTER
+    // ======================
+    if (category && category !== "all") {
+      query.speciality = {
+        $regex: category,
+        $options: "i",
+      };
+    }
+
+    // ======================
+    // 2. SEARCH (NAME or ID)
+    // ======================
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { _id: search } // ID search
+      ];
+    }
+
+    // ======================
+    // 3. GENDER FILTER
+    // ======================
+    if (gender && gender !== "all") {
+      query.gender = gender;
+    }
+
+    // ======================
+    // 4. FEE FILTER
+    // ======================
+    if (minFee || maxFee) {
+      query.fee = {};
+      if (minFee) query.fee.$gte = parseInt(minFee);
+      if (maxFee) query.fee.$lte = parseInt(maxFee);
+    }
+
+    const totalDoctors = await doctorsCollection.countDocuments(query);
 
     const doctors = await doctorsCollection
-      .find()
-      .skip(skip)      // 🔥 IMPORTANT
-      .limit(limit)    // 🔥 IMPORTANT
+      .find(query)
+      .skip(skip)
+      .limit(limit)
       .toArray();
 
-    res.send({
+    res.json({
       doctors,
-      total,
-      totalPages: Math.ceil(total / limit),
-      page,
+      totalPages: Math.ceil(totalDoctors / limit),
+      currentPage: page,
     });
+
   } catch (err) {
-    res.status(500).send({ error: "Failed to fetch doctors" });
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 });
     //single doctor details
-app.get("/api/doctors/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const doctor = await doctorsCollection.findOne({ _id: new ObjectId(id) });
-    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
-    res.json(doctor);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+    app.get("/api/doctors/:id", async (req, res) => {
+      const { id } = req.params;
+      try {
+        const doctor = await doctorsCollection.findOne({
+          _id: new ObjectId(id),
+        });
+        if (!doctor)
+          return res.status(404).json({ message: "Doctor not found" });
+        res.json(doctor);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+      }
+    });
+
+
+
 
     // POST doctor (optional: to seed data)
     app.post("/doctors", async (req, res) => {
