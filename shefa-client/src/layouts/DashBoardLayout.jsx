@@ -8,6 +8,7 @@ const DashBoardLayout = () => {
     <div className="h-20">
       <Up></Up>
     </div>
+    
         
         <Outlet></Outlet>
       

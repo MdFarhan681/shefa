@@ -1,3 +1,5 @@
+import { MapPin } from "lucide-react";
+
 const PharmacyCard = ({ shop }) => {
  const openInGoogleMap = () => {
   const query = `${shop.shop_name}, ${shop.address}`;
@@ -9,13 +11,14 @@ const PharmacyCard = ({ shop }) => {
 <div className="card shadow-lg rounded-xl p-5 max-w-sm mx-auto hover:shadow-2xl transition-shadow duration-300 h-65 flex flex-col justify-between mb-8">
   
   {/* Shop Name - max 2 lines */}
-  <h2 className="text-xl font-bold text-gray-800 line-clamp-2">
+  <h2 className="text-xl font-bold text-gray-800 line-clamp-2  mb-3">
     {shop.shop_name || "No Name"}
   </h2>
 
   <div className="mt-2 space-y-1">
     {/* Address - 1 line */}
-    <p className="text-gray-600 line-clamp-1">
+    <p className="text-gray-600 line-clamp-1 flex items-start   gap-1">
+       <MapPin size={16} className="text-blue-500 mt-1" />
       {shop.address || "No Address"}
     </p>
 
@@ -49,7 +52,7 @@ const PharmacyCard = ({ shop }) => {
     onClick={openInGoogleMap}
     className="my-btn mt-4 !w-full"
   >
-    Show in Google Map
+    ম্যাপে দেখুন
   </button>
 </div>
   );

@@ -6,6 +6,7 @@ import SocialLogin from "../SocialLogin/SocialLogin";
 import toast from "react-hot-toast";
 import { BsEyeglasses } from "react-icons/bs";
 import { PiEyeClosed } from "react-icons/pi";
+import MedicalHistoryForm from "../MedicalHistoryForm/MedicalHistoryForm";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,8 +18,10 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const { registerUser, updateUserProfile } = useAuth();
   const navigate = useNavigate();
+  const [showHistoryForm, setShowHistoryForm] = useState(false);
 
   const roleBtn = (value, label) => (
     <button
@@ -41,10 +44,10 @@ const Register = () => {
           email: data.email,
           displayName: data.name,
           photoURL: data.photo,
-          role: role, // ✅ dynamic role
+          role: role,
         };
 
-        fetch("http://localhost:3000/users", {
+        fetch("https://shefa-server.vercel.app/users", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -54,7 +57,7 @@ const Register = () => {
           .then((res) => res.json())
           .then((response) => {
             if (!response.inserted) {
-              toast.error("User already exists ⚠️");
+              toast.error("ব্যবহারকারী আগে থেকেই আছে ⚠️");
               setLoading(false);
               return;
             }
@@ -64,14 +67,15 @@ const Register = () => {
               photoURL: data.photo,
             })
               .then(() => {
-                toast.success("Registration successful 🎉");
+                toast.success("রেজিস্ট্রেশন সফল 🎉");
                 navigate("/");
               })
               .finally(() => setLoading(false));
-            toast.success("Registration successful 🎉");
+
+            toast.success("রেজিস্ট্রেশন সফল 🎉");
           })
           .catch(() => {
-            toast.error("Database error ❌");
+            toast.error("ডাটাবেস সমস্যা ❌");
             setLoading(false);
           });
       })
@@ -85,63 +89,64 @@ const Register = () => {
     <div className="min-h-screen">
       <div className="flex justify-center items-center">
         <div className="card bg-base-100 w-[94%] md:w-[420px] shadow-2xl">
+
           <h1 className="text-xl md:text-3xl pt-5 font-bold text-center">
-            Register Your Account
+            অ্যাকাউন্ট রেজিস্ট্রেশন
           </h1>
 
           <form
             onSubmit={handleSubmit(handleRegistration)}
             className="card-body"
           >
-            {/* ✅ Role Selector */}
+            {/* ভূমিকা নির্বাচন */}
             <div className="flex gap-2 bg-gray-100 rounded-xl p-1 mb-3">
-              {roleBtn("patient", "Patient")}
-              {roleBtn("doctor", "Doctor")}
+              {roleBtn("patient", "রোগী")}
+              {roleBtn("doctor", "ডাক্তার")}
             </div>
 
-            {/* Name */}
-            <label className="label">Name</label>
+            {/* নাম */}
+            <label className="label">নাম</label>
             <input
               {...register("name", { required: true })}
               className="input w-full"
-              placeholder="Enter your name"
+              placeholder="আপনার নাম লিখুন"
             />
-            {errors.name && <p className="text-red-500">Name required</p>}
+            {errors.name && <p className="text-red-500">নাম আবশ্যক</p>}
 
-            {/* Email */}
-            <label className="label">Email</label>
+            {/* ইমেইল */}
+            <label className="label">ইমেইল</label>
             <input
               type="email"
               {...register("email", { required: true })}
               className="input w-full"
-              placeholder="Email"
+              placeholder="ইমেইল লিখুন"
             />
-            {errors.email && <p className="text-red-500">Email required</p>}
+            {errors.email && <p className="text-red-500">ইমেইল আবশ্যক</p>}
 
-            {/* Photo */}
-            <label className="label">Photo URL</label>
+            {/* ছবি */}
+            <label className="label">ছবির URL</label>
             <input
               {...register("photo", { required: true })}
               className="input w-full"
               placeholder="https://..."
             />
-            {errors.photo && <p className="text-red-500">Photo required</p>}
+            {errors.photo && <p className="text-red-500">ছবি আবশ্যক</p>}
 
-            {/* Password */}
+            {/* পাসওয়ার্ড */}
             <div className="relative">
-              <label className="label">Password</label>
+              <label className="label">পাসওয়ার্ড</label>
 
               <input
                 type={showPassword ? "text" : "password"}
                 {...register("password", { required: true, minLength: 6 })}
                 className="input w-full pr-12"
-                placeholder="Password"
+                placeholder="পাসওয়ার্ড লিখুন"
               />
 
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-9 transform -translate-y-1/2 text-gray-500"
+                className="absolute right-3 top-9 text-gray-500"
               >
                 {showPassword ? (
                   <PiEyeClosed size={22} />
@@ -152,12 +157,12 @@ const Register = () => {
 
               {errors.password?.type === "minLength" && (
                 <p className="text-red-500">
-                  Password must be at least 6 characters
+                  পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে
                 </p>
               )}
             </div>
 
-            {/* Button */}
+            {/* রেজিস্টার বাটন */}
             <button
               type="submit"
               disabled={loading}
@@ -166,23 +171,44 @@ const Register = () => {
               {loading ? (
                 <span className="loading loading-spinner"></span>
               ) : (
-                "Register"
+                "রেজিস্টার"
               )}
             </button>
 
-            {/* Login */}
+            {/* লগইন */}
             <p className="font-semibold text-center pt-3">
-              Already have an account?
+              ইতিমধ্যে অ্যাকাউন্ট আছে?
               <Link to="/login" className="text-blue-600 ml-1">
-                Login
+                লগইন করুন
               </Link>
             </p>
 
-            {/* Social */}
+            {/* সোশ্যাল লগইন */}
             <div className="pt-3">
               <SocialLogin />
             </div>
+
+            {/* মেডিকেল হিস্ট্রি বাটন */}
+            <button
+              type="button"
+              onClick={() => setShowHistoryForm(true)}
+              className="w-full py-2 mt-2 bg-green-100 text-green-700 rounded-xl font-semibold"
+            >
+              মেডিকেল ইতিহাস যোগ করুন (ঐচ্ছিক)
+            </button>
           </form>
+
+          {/* মেডিকেল হিস্ট্রি ফর্ম */}
+          {showHistoryForm && (
+            <MedicalHistoryForm
+              onClose={() => setShowHistoryForm(false)}
+              onSave={(data) => {
+                console.log("Medical History:", data);
+                toast.success("মেডিকেল ইতিহাস সংরক্ষিত হয়েছে!");
+              }}
+            />
+          )}
+
         </div>
       </div>
     </div>

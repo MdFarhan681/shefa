@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 import femaleDoctor from "../../../assets/femaleDoctor.png";
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 import { FaFacebookF } from "react-icons/fa";
 import Loading from "../../../components/Loading/Loading";
+import DoctorFeeCard from "../../../components/DoctorFeeCard/DoctorFeeCard";
 
 export default function DoctorDetailsPage() {
   const { id } = useParams();
@@ -30,6 +32,24 @@ export default function DoctorDetailsPage() {
   const [reviewText, setReviewText] = useState("");
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(20);
+  const navigate = useNavigate();
+
+
+// Promo code stateconst
+let offlineFee =  Number(doctor?.fee) || 70;
+
+  const onlineBaseDiscount = 0.2; // 20% less than offline
+
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+
+  // calculate fees
+  let onlineFee = offlineFee - offlineFee * onlineBaseDiscount;
+
+
+
+
+
 
   // ✅ DEFAULT FALLBACK DATA
   const fallback = {
@@ -116,7 +136,9 @@ export default function DoctorDetailsPage() {
   useEffect(() => {
     const fetchDoctor = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/doctors/${id}`);
+        const res = await axios.get(
+          `https://shefa-server.vercel.app/api/doctors/${id}`,
+        );
 
         // merge fallback + api data
         const finalData = { ...fallback, ...res.data };
@@ -167,9 +189,7 @@ export default function DoctorDetailsPage() {
       case "reviews":
         return (
           <>
-          {
-            console.log("details page:", doctor)
-          }
+            {console.log("details page:", doctor)}
             {doctor.reviews?.length ? (
               doctor.reviews.map((r, i) =>
                 card(
@@ -219,6 +239,23 @@ export default function DoctorDetailsPage() {
   };
 
   const defaultImage = doctor.gender === "মহিলা" ? femaleDoctor : maleDoctor;
+
+
+
+  // base fees
+  
+
+  if (promoApplied) {
+    onlineFee = onlineFee - onlineFee * 0.05; // extra 5%
+  }
+
+  const handleApplyPromo = () => {
+    if (promoCode.toLowerCase() === "health5") {
+      setPromoApplied(true);
+    } else {
+      alert("Invalid Promo Code");
+    }
+  };
 
   return (
     <section className="max-w-full mx-auto px-[7%] py-10">
@@ -308,13 +345,8 @@ export default function DoctorDetailsPage() {
           </div>
 
           {/* FEE */}
-          <div className=" flex flex-col bg-blue-50 p-6 rounded-3xl text-center items-center justify-center ">
-            <p>পরামর্শ ফি</p>
-            <h2 className="text-3xl font-bold text-blue-600">{doctor.fee}</h2>
-            <button className="btn my-btn !w-full mt-3">
-              অ্যাপয়েন্টমেন্ট নিন
-            </button>
-          </div>
+         <DoctorFeeCard  doctor={doctor}></DoctorFeeCard>
+  
         </div>
       </div>
 

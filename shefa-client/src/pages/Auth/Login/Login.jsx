@@ -6,14 +6,13 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 import SocialLogin from "../SocialLogin/SocialLogin";
 
-
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const { signInUser, googleSignIn } = useAuth(); // your auth hook
+  const { signInUser, googleSignIn } = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -24,16 +23,16 @@ const Login = () => {
 
     signInUser(email, password)
       .then(() => {
-        toast.success("Login Successful 🎉");
+        toast.success("লগইন সফল 🎉");
         navigate(location.state || "/");
       })
       .catch((error) => {
         if (error.code === "auth/wrong-password") {
-          toast.error("Incorrect Password");
+          toast.error("ভুল পাসওয়ার্ড");
         } else if (error.code === "auth/user-not-found") {
-          toast.error("No user found with that email");
+          toast.error("এই ইমেইলে কোনো ইউজার নেই");
         } else {
-          toast.error("Invalid email or password");
+          toast.error("ইমেইল বা পাসওয়ার্ড ভুল");
         }
       });
   };
@@ -41,11 +40,11 @@ const Login = () => {
   const handleGoogle = () => {
     googleSignIn()
       .then(() => {
-        toast.success("Google Sign-In Successful");
+        toast.success("Google দিয়ে লগইন সফল 🎉");
         navigate(location.state || "/");
       })
       .catch(() => {
-        toast.error("Google Sign-In Failed. Try again");
+        toast.error("Google লগইন ব্যর্থ হয়েছে");
       });
   };
 
@@ -55,75 +54,84 @@ const Login = () => {
 
   return (
     <div className="min-h-screen">
-     
       <div className="flex justify-center items-center px-[7%]">
         <div className="card bg-base-100 w-[94%] md:w-[420px] shadow-2xl">
+
           <h1 className="text-xl md:text-3xl font-bold pt-5 text-center mb-3">
-            Login to Your Account
+            আপনার অ্যাকাউন্টে লগইন করুন
           </h1>
 
           <div className="card-body w-full">
             <form onSubmit={handleLogin} className="space-y-4">
-              {/* Email */}
-              <label className="label">Email</label>
+
+              {/* ইমেইল */}
+              <label className="label">ইমেইল</label>
               <input
                 type="email"
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input w-full"
-                placeholder="Enter your email"
+                placeholder="আপনার ইমেইল লিখুন"
                 required
               />
 
-              {/* Password */}
+              {/* পাসওয়ার্ড */}
               <div className="relative">
-                <label className="label">Password</label>
+                <label className="label">পাসওয়ার্ড</label>
+
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
                   className="input w-full pr-12"
-                  placeholder="Enter your password"
+                  placeholder="পাসওয়ার্ড লিখুন"
                   required
                 />
+
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-9 transform -translate-y-1/2 text-gray-500"
                 >
-                  {showPassword ? <PiEyeClosed size={22} /> : <BsEyeglasses size={22} />}
+                  {showPassword ? (
+                    <PiEyeClosed size={22} />
+                  ) : (
+                    <BsEyeglasses size={22} />
+                  )}
                 </button>
               </div>
 
-              {/* Forgot Password */}
+              {/* পাসওয়ার্ড ভুলে গেছেন */}
               <button
                 type="button"
                 onClick={handleForgotPassword}
                 className="link link-hover text-blue-600"
               >
-                Forgot Password?
+                পাসওয়ার্ড ভুলে গেছেন?
               </button>
 
-              {/* Submit */}
+              {/* লগইন বাটন */}
               <button
                 type="submit"
                 className="btn w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-semibold text-sm py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 active:scale-95"
               >
-                Login
+                লগইন
               </button>
 
-              {/* Register Link */}
+              {/* রেজিস্টার */}
               <p className="font-semibold text-center pt-3">
-                Don't have an account?
+                আপনার কি অ্যাকাউন্ট নেই?
                 <Link to="/register" className="text-red-600 ml-1">
-                  Register
+                  রেজিস্টার করুন
                 </Link>
               </p>
 
-              {/* Google Sign-In */}
-             <SocialLogin></SocialLogin>
+              {/* সোশ্যাল লগইন */}
+              <SocialLogin />
+
             </form>
           </div>
+
         </div>
       </div>
     </div>

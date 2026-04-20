@@ -42,3 +42,8 @@ body {
   color: #060606;
   font-weight: 600;
 }
+
+.bpFab {
+  bottom: 100px !important; /* higher */
+  right: 20px !important;   /* move left/right */
+}

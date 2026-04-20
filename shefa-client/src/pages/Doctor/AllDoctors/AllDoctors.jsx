@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DoctorCard from "../../Shared/DoctorCard/DoctorCard";
 
-const API_URL = "http://localhost:3000/doctors";
+const API_URL = "https://shefa-server.vercel.app/doctors";
 
 const categories = [
   "all",
@@ -76,9 +76,10 @@ const AllDoctors = () => {
     return () => clearTimeout(t);
   }, [search, gender, minFee, maxFee, selectedCat]);
 
+ 
+
   return (
     <div className="bg-gray-50 min-h-screen px-4 sm:px-6 lg:px-[7%]">
-
       {/* ================= SEARCH ================= */}
       <div className="p-3 sm:p-4 bg-white shadow sticky top-0 z-10 rounded-2xl">
         <input
@@ -92,15 +93,12 @@ const AllDoctors = () => {
 
       {/* ================= MAIN LAYOUT ================= */}
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 p-3 sm:p-4">
-
         {/* ================= LEFT FILTER ================= */}
         <div className="w-full lg:w-1/4 bg-white p-4 rounded-xl shadow h-fit">
-
           <h2 className="text-lg font-bold mb-4">Filters</h2>
 
           {/* Gender + Fee row on mobile */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
-
             <select
               className="w-full border border-gray-300 p-2 rounded"
               value={gender}
@@ -161,7 +159,6 @@ const AllDoctors = () => {
 
         {/* ================= RIGHT SIDE ================= */}
         <div className="w-full lg:w-3/4">
-
           {/* HEADER */}
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
             <h2 className="text-lg sm:text-xl font-bold">

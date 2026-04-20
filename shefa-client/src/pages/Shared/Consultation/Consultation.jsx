@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Motion from "../../../Components/Motion/Motion";
 
 const Consultation = () => {
   const [mounted, setMounted] = useState(false);
@@ -12,8 +13,10 @@ const Consultation = () => {
 
   return (
     <section className="w-full mx-auto">
-      {/* Section Title */}
-      <div className="text-center mb-12">
+
+      <Motion>
+   {/* Section Title */}
+         <div className="text-center mb-12">
         <p className="inline-block bg-blue-100 text-blue-600 text-sm font-medium px-3 py-1 rounded-full mb-2">
           সহজ প্রক্রিয়া
         </p>
@@ -70,6 +73,9 @@ const Consultation = () => {
           />
         </div>
       </div>
+      </Motion>
+   
+     
     </section>
   );
 };

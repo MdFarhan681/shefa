@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 import DoctorCard from "../DoctorCard/DoctorCard";
 import { ArrowRight, Loader } from "lucide-react";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "https://shefa-server.vercel.app";
 
 export default function DoctorSlider() {
   const [doctors, setDoctors] = useState([]);
@@ -53,7 +53,6 @@ export default function DoctorSlider() {
 
       {loading ? (
         <div className="h-40 flex justify-center items-center">
-
           <Loader className="animate-spin text-gray-500" size={32} />
         </div>
       ) : (
@@ -63,13 +62,13 @@ export default function DoctorSlider() {
           slidesPerView={5}
           autoplay={{ delay: 3000 }}
           pagination={{ clickable: true }}
-           breakpoints={{
-    320: { slidesPerView: 1 },
-    640: { slidesPerView: 2 },
-    768: { slidesPerView: 3 },
-    1024: { slidesPerView: 4 },
-    1280: { slidesPerView: 5 },
-           }}
+          breakpoints={{
+            320: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
+            1280: { slidesPerView: 5 },
+          }}
         >
           {doctors.slice(0, 7).map((doctor) => (
             <SwiperSlide key={doctor._id}>

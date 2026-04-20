@@ -19,7 +19,7 @@ const SocialLogin = ({ role = "patient" }) => {
         };
 
         // ✅ Use fetch to save user to MongoDB
-        fetch("http://localhost:3000/users", {
+        fetch("https://shefa-server.vercel.app/users", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify(userInfo),

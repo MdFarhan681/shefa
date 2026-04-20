@@ -6,6 +6,7 @@ import useAuth from "../../hooks/useAuth";
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  console.log("Dashboard User:", user);
 
   useEffect(() => {
     if (user?.role === "doctor") {

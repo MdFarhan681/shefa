@@ -57,7 +57,7 @@ const AuthProvider = ({ children }) => {
 
       try {
         const res = await fetch(
-          `http://localhost:3000/users/${currentUser.email}`,
+          `https://shefa-server.vercel.app/users/${currentUser.email}`,
         );
 
         if (!res.ok) {
@@ -88,6 +88,14 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    userId: user?.uid,
+    userName: user?.displayName || user?.email || "User",
+    role: user?.role,
+    userInfo: {
+      id: user?.uid,
+      name: user?.displayName || user?.email || "User",
+      role: user?.role,
+    },
     loading,
     registerUser,
     signInUser,

@@ -15,6 +15,7 @@ const PatientDashboard = () => {
     "Prescriptions",
     "Reports",
     "Payment",
+    "History",
     "Settings",
   ];
 
@@ -24,7 +25,11 @@ const PatientDashboard = () => {
       {/* TOPBAR (MOBILE) */}
       <div className="lg:hidden flex items-center justify-between p-4 bg-white shadow-md">
         <h1 className="font-bold text-lg">ড্যাশবোর্ড</h1>
-        <button onClick={() => setOpen(!open)}>
+
+        <button
+          onClick={() => setOpen(true)}
+          className="p-2 rounded-md hover:bg-gray-100"
+        >
           <Menu />
         </button>
       </div>
@@ -33,28 +38,29 @@ const PatientDashboard = () => {
 
         {/* SIDEBAR */}
         <aside
-          className={`fixed lg:static top-4 left-4 lg:top-0 lg:left-0 
-          h-[90vh] lg:h-full w-[75%] sm:w-64 
-          bg-blue-100/70 backdrop-blur-xl shadow-xl p-4 
-          transform transition-transform duration-300 z-50 rounded-2xl
-          ${open ? "translate-x-0" : "-translate-x-[120%] lg:translate-x-0"}`}
+          className={`fixed lg:static top-0 left-0 h-full w-64
+          bg-blue-100/70 backdrop-blur-xl shadow-xl p-4
+          transition-transform duration-300 z-50
+          ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
         >
-          <h2 className="text-xl font-bold mb-6 text-primary">
+          <h2 className="text-xl font-bold mb-6 text-blue-600">
             রোগী প্যানেল
           </h2>
 
-          <ul className="menu gap-2 w-full overflow-y-auto max-h-[60vh] pr-1">
+          <ul className="space-y-2">
 
-            {/* MENU ITEMS */}
             {menuItems.map((item) => (
               <li key={item}>
                 <button
-                  onClick={() => setActive(item)}
-                  className={`w-full text-left px-4 py-2 rounded-xl transition-all duration-300 border border-gray-300
+                  onClick={() => {
+                    setActive(item);
+                    setOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 rounded-xl border transition
                   ${
                     active === item
-                      ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg scale-[1.02]"
-                      : "hover:bg-blue-100 hover:scale-[1.01]"
+                      ? "bg-blue-500 text-white"
+                      : "hover:bg-blue-100"
                   }`}
                 >
                   {item === "Overview" && "ওভারভিউ"}
@@ -62,16 +68,17 @@ const PatientDashboard = () => {
                   {item === "Prescriptions" && "প্রেসক্রিপশন"}
                   {item === "Reports" && "রিপোর্ট"}
                   {item === "Payment" && "পেমেন্ট"}
+                  {item === "History" && "মেডিকেল ইতিহাস"}
                   {item === "Settings" && "সেটিংস"}
                 </button>
               </li>
             ))}
 
-            {/* FAMILY DROPDOWN */}
+            {/* FAMILY */}
             <li>
               <button
                 onClick={() => setFamilyOpen(!familyOpen)}
-                className="w-full flex justify-between items-center px-4 py-2 rounded-xl hover:bg-blue-100 transition border border-gray-300"
+                className="w-full flex justify-between items-center px-4 py-2 rounded-xl hover:bg-blue-100 border"
               >
                 পরিবার
                 <ChevronDown
@@ -85,17 +92,17 @@ const PatientDashboard = () => {
               {familyOpen && (
                 <ul className="ml-4 mt-2 space-y-1">
                   <li>
-                    <button className="w-full text-left px-3 py-1 rounded-lg hover:bg-blue-100 border border-gray-300">
+                    <button className="w-full text-left px-3 py-1 border rounded-lg hover:bg-blue-100">
                       বাবা ড্যাশবোর্ড
                     </button>
                   </li>
                   <li>
-                    <button className="w-full text-left px-3 py-1 rounded-lg border border-gray-300 hover:bg-blue-100">
+                    <button className="w-full text-left px-3 py-1 border rounded-lg hover:bg-blue-100">
                       মা ড্যাশবোর্ড
                     </button>
                   </li>
                   <li>
-                    <button className="w-full text-left px-3 py-1 rounded-lg hover:bg-blue-100 border border-gray-300">
+                    <button className="w-full text-left px-3 py-1 border rounded-lg hover:bg-blue-100">
                       শিশু ড্যাশবোর্ড
                     </button>
                   </li>
@@ -105,7 +112,7 @@ const PatientDashboard = () => {
           </ul>
 
           {/* LOGOUT */}
-          <button className="w-full mt-6 bg-blue-500 text-white py-2 rounded-xl hover:scale-105 transition">
+          <button className="w-full mt-6 bg-blue-500 text-white py-2 rounded-xl">
             লগ আউট
           </button>
         </aside>
@@ -114,35 +121,35 @@ const PatientDashboard = () => {
         {open && (
           <div
             onClick={() => setOpen(false)}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm lg:hidden"
-          ></div>
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          />
         )}
 
-        {/* MAIN CONTENT */}
-        <main className="flex-1 p-4 sm:p-5 md:p-6 lg:p-8">
+        {/* MAIN */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
 
-          {/* BACK BUTTON */}
+          {/* HOME BUTTON (FIXED) */}
           <button
             onClick={() => {
-  
-  navigate("/");
-}}
-            className="flex items-center gap-2 mb-4 text-blue-600 hover:underline bg-blue-500/20 px-5 py-1 rounded-lg w-max"
+              setOpen(false);
+              navigate("/");
+            }}
+            className="flex items-center gap-2 mb-4 text-blue-600 bg-blue-100 px-4 py-1 rounded-lg"
           >
             <ArrowLeft size={18} />
             হোম
           </button>
 
           {/* HEADER */}
-          <h2 className="text-2xl font-semibold mb-1">
-            স্বাগতম 
+          <h2 className="text-2xl font-semibold">
+            স্বাগতম
           </h2>
           <p className="text-gray-500 mb-6">
             আপনার স্বাস্থ্য কার্যকলাপের সারসংক্ষেপ
           </p>
 
           {/* CARDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
             {[
               { title: "মোট পরামর্শ", value: 3 },
@@ -152,31 +159,23 @@ const PatientDashboard = () => {
             ].map((card, i) => (
               <div
                 key={i}
-                className="bg-white/60 backdrop-blur-xl border border-white/30 shadow-lg rounded-2xl p-4 hover:scale-105 transition duration-300"
+                className="bg-white/70 backdrop-blur-xl border rounded-2xl p-4 shadow hover:scale-105 transition"
               >
                 <h2 className="text-sm text-gray-500">{card.title}</h2>
-                <p className="text-2xl font-bold mt-1">{card.value}</p>
+                <p className="text-2xl font-bold">{card.value}</p>
               </div>
             ))}
-
           </div>
 
-          {/* RECENT SECTION */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/30 shadow-lg rounded-2xl mt-8 p-5">
+          {/* RECENT */}
+          <div className="bg-white/70 mt-8 p-5 rounded-2xl shadow">
+            <h2 className="font-semibold text-lg">
+              সাম্প্রতিক কার্যক্রম
+            </h2>
 
-            <div className="flex justify-between items-center">
-              <h2 className="font-semibold text-lg">
-                সাম্প্রতিক কার্যক্রম
-              </h2>
-              <button className="text-blue-500 hover:underline text-sm">
-                সব দেখুন
-              </button>
-            </div>
-
-            <div className="mt-6 text-center text-gray-400 animate-pulse">
+            <div className="mt-6 text-center text-gray-400">
               লোড হচ্ছে...
             </div>
-
           </div>
 
         </main>

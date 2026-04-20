@@ -3,6 +3,7 @@ import ResponsiveSlider from '../Shared/Slider/Slider'
 import Consultation from '../Shared/Consultation/Consultation'
 import FAQSection from '../Shared/FAQSection/FAQSection'
 import DoctorSlider from '../Shared/DoctorSlider/DoctorSlider'
+import WhyChoose from '../Shared/WhyChoose/WhyChoose'
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
 <DoctorSlider></DoctorSlider>
 <Consultation
 ></Consultation>
+<WhyChoose></WhyChoose>
 
 <FAQSection></FAQSection>
 

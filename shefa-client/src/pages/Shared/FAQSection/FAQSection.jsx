@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import Motion from "../../../Components/Motion/Motion";
 const faqs = [
   {
     question: "অনলাইন ডাক্তারের পরামর্শের খরচ কত?",
@@ -42,7 +43,9 @@ const FAQSection = () => {
 
   return (
     <section className="w-full mx-auto mb-10">
-      <div className="text-center">
+<Motion>
+   <div className="text-center">
+       
         <p className="inline-block bg-blue-100 text-blue-600 text-sm font-medium px-3 py-1 rounded-full mb-2">
           প্রশ্ন-উত্তর
         </p>
@@ -57,8 +60,10 @@ const FAQSection = () => {
       </div>
 
       <div className="space-y-4">
+        
         {faqs.map((faq, index) => (
-          <div
+            <Motion key={index} delay={index * 0.1}>
+ <div
             key={index}
             className="border rounded-xl p-6 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-500"
           >
@@ -85,8 +90,15 @@ const FAQSection = () => {
               </p>
             )}
           </div>
+            </Motion>
+         
         ))}
+
       </div>
+
+</Motion>
+     
+
     </section>
   );
 };
