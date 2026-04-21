@@ -71,11 +71,7 @@ const Prescriptions = () => {
           <IoDocumentText /> প্রেসক্রিপশন রিপোর্ট
         </h1>
 
-        {isSample && (
-          <div className="mt-3 text-sm bg-yellow-100 text-yellow-700 p-2 rounded">
-            কোনো ইউজার ডাটা নেই — ডেমো ডাটা দেখানো হচ্ছে
-          </div>
-        )}
+      
       </div>
 
       {/* CARDS */}

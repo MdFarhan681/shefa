@@ -3,18 +3,18 @@ import useAuth from "../../../../hooks/useAuth";
 import { IoDocumentText } from "react-icons/io5";
 import { MdImage } from "react-icons/md";
 
-// 🧪 Sample fallback data
 const sampleReports = [
   {
     title: "Blood Test Report",
     date: "2026-04-10",
-   image: "https://www.shutterstock.com/shutterstock/photos/159015356/display_1500/stock-photo-blood-test-results-isolated-on-white-background-159015356.jpg"
+    image: "https://www.shutterstock.com/shutterstock/photos/159015356/display_1500/stock-photo-blood-test-results-isolated-on-white-background-159015356.jpg"
   },
   {
     title: "X-Ray Chest",
     date: "2026-03-22",
-   image: "https://www.shutterstock.com/shutterstock/photos/159015356/display_1500/stock-photo-blood-test-results-isolated-on-white-background-159015356.jpg"
-  },{
+    image: "https://www.shutterstock.com/shutterstock/photos/159015356/display_1500/stock-photo-blood-test-results-isolated-on-white-background-159015356.jpg"
+  },
+  {
     title: "ECG Report",
     date: "2026-02-15",
     image: "https://www.shutterstock.com/shutterstock/photos/159015356/display_1500/stock-photo-blood-test-results-isolated-on-white-background-159015356.jpg"
@@ -22,22 +22,40 @@ const sampleReports = [
 ];
 
 const Reports = () => {
-  const { user } = useAuth();
+  const { user: firebaseUser } = useAuth();
 
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // 🖼️ modal state
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // 🔥 Fetch MongoDB user
   useEffect(() => {
-    if (user?.reports && user.reports.length > 0) {
-      setReports(user.reports);
-    } else {
-      setReports([]);
-    }
-    setLoading(false);
-  }, [user]);
+    if (!firebaseUser?.email) return;
+
+    setLoading(true);
+
+    fetch(`https://shefa-server.vercel.app/users/${firebaseUser.email}`)
+      .then(res => res.json())
+      .then(data => {
+        const mongoReports =
+          data?.medicalHistory?.reports?.map((r) => {
+            return typeof r === "string"
+              ? {
+                  title: r,
+                  date: "N/A",
+                  image: data?.medicalHistory?.reportImage || ""
+                }
+              : r;
+          }) || [];
+
+        setReports(mongoReports);
+        setLoading(false);
+      })
+      .catch(() => {
+        setReports([]);
+        setLoading(false);
+      });
+  }, [firebaseUser?.email]);
 
   if (loading) {
     return (
@@ -74,7 +92,7 @@ const Reports = () => {
             {/* IMAGE */}
             <div className="relative">
               <img
-                src={item.image}
+                src={item.image || "https://via.placeholder.com/300"}
                 className="w-full h-48 object-cover"
               />
 
@@ -94,10 +112,9 @@ const Reports = () => {
                 📅 {item.date}
               </p>
 
-              {/* VIEW BUTTON */}
               <button
                 onClick={() => setSelectedImage(item.image)}
-                className="mt-3 w-full py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition"
+                className="mt-3 w-full py-2 bg-blue-100 text-blue-700 rounded-lg"
               >
                 View Details
               </button>
@@ -108,13 +125,12 @@ const Reports = () => {
 
       </div>
 
-      {/* 🖼️ FULL SCREEN IMAGE MODAL */}
+      {/* MODAL */}
       {selectedImage && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
 
           <div className="relative max-w-4xl w-full p-4">
 
-            {/* CLOSE BUTTON */}
             <button
               onClick={() => setSelectedImage(null)}
               className="absolute top-2 right-2 bg-white text-black px-3 py-1 rounded-full"
@@ -122,7 +138,6 @@ const Reports = () => {
               ✕
             </button>
 
-            {/* IMAGE */}
             <img
               src={selectedImage}
               className="w-full max-h-[90vh] object-contain rounded-lg"

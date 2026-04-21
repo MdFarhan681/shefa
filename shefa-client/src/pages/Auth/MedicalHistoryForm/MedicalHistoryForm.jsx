@@ -2,11 +2,37 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 const MedicalHistoryForm = ({ onClose, onSave }) => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
 
+  // ✅ Convert image to base64 + submit
   const submitData = (data) => {
-    onSave(data);
-    onClose();
+    const file = data.reportImage?.[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const finalData = {
+          ...data,
+          reportImage: reader.result, // ✅ base64 string
+        };
+
+        onSave(finalData);
+        reset();
+        onClose();
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      const finalData = {
+        ...data,
+        reportImage: "",
+      };
+
+      onSave(finalData);
+      reset();
+      onClose();
+    }
   };
 
   return (
@@ -14,7 +40,7 @@ const MedicalHistoryForm = ({ onClose, onSave }) => {
       <div className="bg-white w-[95%] md:w-[700px] p-5 rounded-xl max-h-[90vh] overflow-y-auto">
 
         <h2 className="text-xl font-bold mb-4 text-center">
-          মেডিকেল ইতিহাস ফর্ম
+          🏥 মেডিকেল ইতিহাস ফর্ম
         </h2>
 
         <form onSubmit={handleSubmit(submitData)} className="space-y-6">
@@ -109,9 +135,9 @@ const MedicalHistoryForm = ({ onClose, onSave }) => {
             />
           </div>
 
-          {/* 📊 রিপোর্ট + ছবি আপলোড */}
+          {/* 📊 রিপোর্ট */}
           <div>
-            <p className="font-semibold mb-2">রিপোর্ট আপলোড</p>
+            <p className="font-semibold mb-2">রিপোর্ট</p>
 
             <div className="grid grid-cols-2 gap-2 text-sm mb-2">
               <label><input type="checkbox" {...register("reports")} value="রক্ত পরীক্ষা" /> রক্ত পরীক্ষা</label>
@@ -121,7 +147,7 @@ const MedicalHistoryForm = ({ onClose, onSave }) => {
               <label><input type="checkbox" {...register("reports")} value="কোনোটি না" /> কোনোটি না</label>
             </div>
 
-            {/* 📷 Photo Upload */}
+            {/* 📷 Image Upload */}
             <input
               type="file"
               accept="image/*"
@@ -138,14 +164,14 @@ const MedicalHistoryForm = ({ onClose, onSave }) => {
 
           {/* Buttons */}
           <div className="flex gap-2 pt-2">
-            <button type="submit" className="btn my-btn flex-1 bg-blue-600 text-white">
+            <button type="submit" className="btn flex-1 bg-blue-600 text-white">
               সেভ করুন
             </button>
 
             <button
               type="button"
               onClick={onClose}
-              className="btn flex-1 bg-gray-300 rounded-2xl"
+              className="btn flex-1 bg-gray-300"
             >
               বাতিল
             </button>

@@ -28,6 +28,8 @@ import Payment from "../pages/DashBoard/PatientDashBoard/DashPages/Payment";
 import Settings from "../pages/DashBoard/PatientDashBoard/DashPages/Settings";
 import Reports from "../pages/DashBoard/PatientDashBoard/DashPages/Reports";
 import MedicalHistory from "../pages/DashBoard/PatientDashBoard/DashPages/MedicalHistory";
+import MedicineChecker from "../pages/Services/MedicineChecker/MedicineChecker";
+import FatherDashboard from "../pages/DashBoard/FatherDashboard/FatherDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "doctors", Component: AllDoctors },
       { path: "doctors/:id", Component: DoctorDetailsPage },
       { path: "call/:roomID", Component: VideoCall },
+      { path: "medicine-checker", Component: MedicineChecker },
 
       { path: "services", Component: Services },
       { path: "services/ambulance", Component: AmbulanceCard },
@@ -74,6 +77,7 @@ export const router = createBrowserRouter([
           { path: "payment", element: <Payment /> },
           { path: "history", element: <MedicalHistory /> },
           { path: "settings", element: <Settings /> },
+          { path: "father", element: <FatherDashboard /> },
         ],
       },
 

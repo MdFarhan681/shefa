@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Info,
 } from "lucide-react";
+import { FaShieldAlt } from "react-icons/fa";
 
 import userImage from "../../../assets/user.png";
 import { Link, useLocation } from "react-router-dom";
@@ -15,6 +16,8 @@ import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import Logo from "../Logo/Logo";
 import EmergencyCall from "../../../components/EmergencyCall/EmergencyCall";
+import { MdQrCodeScanner } from "react-icons/md";
+
 
 const middleNav = [
   { label: "হোম", href: "/", icon: Home },
@@ -126,13 +129,22 @@ const Navber = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <button className="relative">
+                {/* <button className="relative">
                   <Bell className="w-5 h-5" />
                   <span className="absolute -top-1 -right-1 w-5 h-5 text-xs bg-red-500 text-white flex items-center justify-center rounded-full">
                     4
                   </span>
-                </button>
-
+                </button> */}
+<Link
+  to="/medicine-checker"
+  className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm transition
+  ${location.pathname === "/medicine-checker"
+    ? "bg-green-600 text-white shadow"
+    : "bg-green-50 text-green-700 hover:bg-green-100"}`}
+>
+  <MdQrCodeScanner  className="text-sm" />
+  <span className="hidden md:inline">Verify</span>
+</Link>
                 <EmergencyCall number="+8801763430056" />
 
                 <img

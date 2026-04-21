@@ -1,42 +1,43 @@
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import useAuth from "../../../../hooks/useAuth";
 
-const fakeMedicalData = {
-  name: "Md.Farhan Ishrak",
-  email: "farhan@gmail.com",
-  role: "patient",
-  medicalHistory: {
-    pastHistory: ["ডায়াবেটিস", "অ্যাজমা"],
-    medications: ["ইনসুলিন"],
-    allergies: ["ধুলো"],
-    familyHistory: "বাবার ডায়াবেটিস আছে",
-    infectious: ["COVID-19"],
-    immunization: "COVID, টিটেনাস",
-    reports: ["রক্ত পরীক্ষা"],
-    reportImage: ""
-  }
-};
-
 const MedicalHistory = () => {
-  const { user } = useAuth();
-  const [data, setData] = useState(null);
+  const { user: firebaseUser } = useAuth(); // Firebase user
+
+  const [user, setUser] = useState(null); // MongoDB user
   const [loading, setLoading] = useState(true);
 
+  // 🔥 Fetch MongoDB user using Firebase email
   useEffect(() => {
-    if (!user?.email) return;
+    if (!firebaseUser?.email) return;
 
-    fetch(`https://shefa-server.vercel.app/users/${user.email}`)
+    setLoading(true);
+
+    fetch(`https://shefa-server.vercel.app/users/${firebaseUser.email}`)
       .then((res) => res.json())
-      .then((result) => {
-        setData(result);
+      .then((data) => {
+        setUser(data); // ✅ full MongoDB user
         setLoading(false);
       })
       .catch(() => {
-        toast.error("ডাটা লোড করতে সমস্যা হয়েছে");
         setLoading(false);
       });
-  }, [user?.email]);
+  }, [firebaseUser?.email]);
+
+  // 🛡️ safe fallback
+  const m = user?.medicalHistory || {};
+
+  // convert to array safely
+  const makeArray = (value) => {
+    if (!value) return [];
+    return Array.isArray(value) ? value : [value];
+  };
+
+  const pastHistory = makeArray(m.pastHistory);
+  const medications = makeArray(m.medications);
+  const allergies = makeArray(m.allergies);
+  const infectious = makeArray(m.infectious);
+  const reports = makeArray(m.reports);
 
   if (loading) {
     return (
@@ -45,17 +46,6 @@ const MedicalHistory = () => {
       </div>
     );
   }
-
-  // 🧠 SAFE FALLBACK LOGIC (IMPORTANT FIX)
-  const finalData = fakeMedicalData || data || {};
-  const m = finalData?.medicalHistory || {};
-
-  // 🛡️ SAFE ARRAYS (prevents undefined error)
-  const pastHistory = m.pastHistory || [];
-  const medications = m.medications || [];
-  const allergies = m.allergies || [];
-  const infectious = m.infectious || [];
-  const reports = m.reports || [];
 
   return (
     <div className="min-h-screen bg-gray-50 p-5 md:p-10">
@@ -68,29 +58,24 @@ const MedicalHistory = () => {
         <p className="text-gray-500">
           রোগীর বিস্তারিত স্বাস্থ্য তথ্য
         </p>
-
-        {/* Demo badge */}
-        {!data && (
-          <div className="mt-3 text-sm bg-yellow-100 text-yellow-700 p-2 rounded">
-            ডেমো ডাটা দেখানো হচ্ছে (MongoDB ডাটা পাওয়া যায়নি)
-          </div>
-        )}
       </div>
 
-      {/* Grid */}
-      <div className="grid md:grid-cols-2 gap-5">
+      {/* USER INFO */}
+      <div className="bg-white p-5 rounded-xl shadow mb-5">
+        <h2 className="font-bold text-lg mb-3">মূল তথ্য</h2>
 
-        {/* Basic Info */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">মূল তথ্য</h2>
-          <p><b>নাম:</b> {finalData.name}</p>
-          <p><b>ইমেইল:</b> {finalData.email}</p>
-          <p><b>রোল:</b> {finalData.role}</p>
-        </div>
+        <p><b>নাম:</b> {user?.displayName || "নেই"}</p>
+        <p><b>ইমেইল:</b> {user?.email || "নেই"}</p>
+        <p><b>রোল:</b> {user?.role || "নেই"}</p>
+      </div>
+
+      {/* GRID */}
+      <div className="grid md:grid-cols-2 gap-5">
 
         {/* Past History */}
         <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">পূর্বের রোগ</h2>
+          <h2 className="font-bold mb-3">পূর্বের রোগ</h2>
+
           {pastHistory.length ? (
             <ul className="list-disc ml-5">
               {pastHistory.map((item, i) => (
@@ -98,13 +83,14 @@ const MedicalHistory = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">কোনো তথ্য নেই</p>
+            <p className="text-gray-400">কোনো তথ্য নেই</p>
           )}
         </div>
 
         {/* Medications */}
         <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">বর্তমান ওষুধ</h2>
+          <h2 className="font-bold mb-3">বর্তমান ওষুধ</h2>
+
           {medications.length ? (
             <ul className="list-disc ml-5">
               {medications.map((item, i) => (
@@ -112,13 +98,14 @@ const MedicalHistory = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">কোনো তথ্য নেই</p>
+            <p className="text-gray-400">কোনো তথ্য নেই</p>
           )}
         </div>
 
         {/* Allergies */}
         <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">অ্যালার্জি</h2>
+          <h2 className="font-bold mb-3">অ্যালার্জি</h2>
+
           {allergies.length ? (
             <ul className="list-disc ml-5">
               {allergies.map((item, i) => (
@@ -126,19 +113,14 @@ const MedicalHistory = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">কোনো তথ্য নেই</p>
+            <p className="text-gray-400">কোনো তথ্য নেই</p>
           )}
-        </div>
-
-        {/* Family History */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">পারিবারিক ইতিহাস</h2>
-          <p>{m.familyHistory || "কোনো তথ্য নেই"}</p>
         </div>
 
         {/* Infectious */}
         <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">সংক্রামক রোগ</h2>
+          <h2 className="font-bold mb-3">সংক্রামক রোগ</h2>
+
           {infectious.length ? (
             <ul className="list-disc ml-5">
               {infectious.map((item, i) => (
@@ -146,19 +128,25 @@ const MedicalHistory = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">কোনো তথ্য নেই</p>
+            <p className="text-gray-400">কোনো তথ্য নেই</p>
           )}
+        </div>
+
+        {/* Family History */}
+        <div className="bg-white p-5 rounded-xl shadow">
+          <h2 className="font-bold mb-3">পারিবারিক ইতিহাস</h2>
+          <p>{m.familyHistory || "কোনো তথ্য নেই"}</p>
         </div>
 
         {/* Immunization */}
         <div className="bg-white p-5 rounded-xl shadow">
-          <h2 className="font-bold text-lg mb-3">টিকা ইতিহাস</h2>
+          <h2 className="font-bold mb-3">টিকা ইতিহাস</h2>
           <p>{m.immunization || "কোনো তথ্য নেই"}</p>
         </div>
 
         {/* Reports */}
         <div className="bg-white p-5 rounded-xl shadow md:col-span-2">
-          <h2 className="font-bold text-lg mb-3">রিপোর্ট</h2>
+          <h2 className="font-bold mb-3">রিপোর্ট</h2>
 
           {reports.length ? (
             <ul className="list-disc ml-5 mb-3">
@@ -167,7 +155,7 @@ const MedicalHistory = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500">কোনো রিপোর্ট নেই</p>
+            <p className="text-gray-400">কোনো রিপোর্ট নেই</p>
           )}
 
           {/* Report Image */}
@@ -175,7 +163,7 @@ const MedicalHistory = () => {
             <img
               src={m.reportImage}
               alt="Report"
-              className="w-full max-w-md rounded-lg border"
+              className="w-full max-w-md rounded-lg border mt-3"
             />
           )}
         </div>

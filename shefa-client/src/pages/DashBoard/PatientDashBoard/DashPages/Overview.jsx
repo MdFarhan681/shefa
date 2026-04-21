@@ -38,7 +38,7 @@ const Overview = () => {
       {/* HEADER */}
       <div className="bg-white p-5 rounded-2xl shadow">
         <h1 className="text-2xl font-bold text-blue-600">
-          স্বাগতম, {data?.name || "ব্যবহারকারী"}
+          স্বাগতম, {data?.displayName || "ব্যবহারকারী"}
         </h1>
         <p className="text-gray-500">
           আপনার স্বাস্থ্য ড্যাশবোর্ড ওভারভিউ
@@ -83,9 +83,9 @@ const Overview = () => {
         {/* BASIC INFO */}
         <div className="bg-white p-5 rounded-xl shadow">
           <h2 className="font-bold mb-3">ব্যক্তিগত তথ্য</h2>
-          <p><b>নাম:</b> {data?.name}</p>
+          <p><b>নাম:</b> {data?.displayName}</p>
           <p><b>ইমেইল:</b> {data?.email}</p>
-          <p><b>রোল:</b> {data?.role}</p>
+         
         </div>
 
         {/* QUICK HISTORY */}

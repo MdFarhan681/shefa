@@ -8,7 +8,6 @@ import Up from "../pages/Shared/Up/Up";
 import useBotpress from "../hooks/useBotpress";
 
 const RootLayout = () => {
-  // 👉 activate bot here
   useBotpress();
 
   return (
